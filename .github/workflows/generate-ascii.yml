@@ -13,15 +13,20 @@ jobs:
         - name: Execute Cowsay CMD
           run: cowsay -f moose "I am a Moose..." >> moose.txt
 
-        - name: Sleep for 30 seconds
-          run: sleep 30
+        - name: Upload Moose text file 
+          uses: actions/upload-artifact@v3
+          with:
+            name: moose-text-file
+            path: moose.txt
 
     test_job_2:
         needs: build_job_1
         runs-on: ubuntu-latest
         steps: 
-        - name: Sleep for 10 seconds
-          run: sleep 10
+        - name: Download Moose text file 
+          uses: actions/download-artifact@v3
+          with:
+              name: moose-text-file
           
         - name: Test file exist
           run: grep -i "Moose" moose.txt
@@ -30,6 +35,10 @@ jobs:
         needs: [test_job_2]
         runs-on: ubuntu-latest
         steps: 
+        - name: Download Moose text file 
+          uses: actions/download-artifact@v3
+          with:
+              name: moose-text-file
         - name: Read file
           run: cat moose.txt
 
